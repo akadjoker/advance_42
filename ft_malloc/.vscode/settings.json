@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "mman-linux.h": "c",
+        "internal.h": "c",
+        "stdint.h": "c",
+        "libft.h": "c",
+        "resource.h": "c"
+    }
+}
