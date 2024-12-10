@@ -1,0 +1,4 @@
+1c1
+< bfd plugin: unterminated_string: file too short
+---
+> 

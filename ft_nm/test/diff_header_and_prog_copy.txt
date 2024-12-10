@@ -1,0 +1,4 @@
+1c1
+< bfd plugin: header_and_prog_copy: file too short
+---
+> 
