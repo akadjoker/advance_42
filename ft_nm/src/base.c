@@ -1,6 +1,23 @@
 #include "ft_nm.h"
 
 
+/**
+ * Prints a symbol to the standard output.
+ *
+ * This function takes a pointer to a struct s_symbol, and prints it
+ * to the standard output in the format specified by the nm command.
+ *
+ * The output format is: value type name\n
+ *
+ * Where value is the value of the symbol, if the type is not 'u', 'U', or 'w'.
+ * Otherwise, a space is printed.
+ *
+ * type is the type of the symbol, as determined by get_sym_type.
+ *
+ * name is the name of the symbol.
+ *
+ * A newline is printed after each symbol.
+ */
 static void print_sym(struct s_symbol *sym)
 {
 	char type;
@@ -19,6 +36,15 @@ static void print_sym(struct s_symbol *sym)
 	ft_putchar_fd('\n', 1);
 }
 
+/**
+ * Compares two symbol names (n1 and n2) ignoring case, and considering
+ * _ and @ as equal to nothing.
+ *
+ * Returns:
+ * 	-1 if n1 comes before n2
+ * 	1 if n1 comes after n2
+ * 	0 if n1 is equal to n2
+ */
 static int sym_name_comp(char *n1, char *n2)
 {
 	char *n1_low;
@@ -33,6 +59,16 @@ static int sym_name_comp(char *n1, char *n2)
 	return res;
 }
 
+/**
+ * Sorts the given list of symbols in-place.
+ *
+ * The sorting order is first by symbol name (ignoring case and considering
+ * _ and @ as equal to nothing), and then by value.
+ *
+ * The list is sorted in-place, and the function does not return anything.
+ *
+ * @param[in,out] sym_list the list of symbols to be sorted.
+ */
 static void sort_sym_list(t_list *sym_list)
 {
 	t_list *current;
@@ -84,6 +120,22 @@ int print_error(const char *s, const char *prefix)
 }
 
 
+/**
+ * Prints the symbols in the given ELF file.
+ *
+ * This function takes a pointer to an ELF file, and prints all the symbols
+ * in the file to the standard output. The format of the output is specified
+ * by the nm command.
+ *
+ * The file is expected to be a valid ELF file, and the function does not
+ * check for errors in the file.
+ *
+ * @param[in] ptr the pointer to the ELF file
+ * @param[in] path the path to the file
+ * @param[in] s the stat structure for the file
+ *
+ * @return 0 if the function succeeds, 1 if an error occurs
+ */
 int printer(const char *ptr, char *path, struct stat s)
 {
 	char *ei_mag;

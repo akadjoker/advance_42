@@ -16,7 +16,7 @@ INCLUDES = -I$(INCLUDE_DIR) -I$(LIBFT_DIR)/include
 
 # Compilador e flags
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address -fsanitize=undefined -fsanitize=leak
 
 # Arquivos fonte e objeto
 SRC = $(wildcard $(SRC_DIR)/*.c)
