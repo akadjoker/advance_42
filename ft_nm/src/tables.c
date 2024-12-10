@@ -321,6 +321,17 @@ static struct s_sym_type_ref symbol_type_ref[] =
 		.sh_name = "",
 		.letter = 'D',
 	},
+// 	{
+//     .st_bind = STB_GLOBAL,
+//     .st_type = -1,
+//     .st_value = -1,
+//     .st_shndx = -1,
+//     .sh_type = SHT_PROGBITS,
+//     .sh_flags = SHF_ALLOC | SHF_WRITE,
+//     .sh_flags_not = -1,
+//     .sh_name = "",
+//     .letter = 'D',
+// },
 	{},
 };
 

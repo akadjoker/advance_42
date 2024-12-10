@@ -17,7 +17,6 @@ INCLUDES = -I$(INCLUDE_DIR) -I$(LIBFT_DIR)/include
 # Compilador e flags
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -g
-SANITIZE = -fsanitize=address -fsanitize=leak -fsanitize=undefined -fno-omit-frame-pointer
 
 # Arquivos fonte e objeto
 SRC = $(wildcard $(SRC_DIR)/*.c)
@@ -44,12 +43,12 @@ libft:
 # Corrigido: mudou de $(OBJS) para $(OBJ)
 $(NAME): $(OBJ)
 	@echo "Linking $(NAME)..."
-	@$(CC) $(CFLAGS) $(SANITIZE) $(OBJ) $(LIBFT) -o $(NAME)
+	@$(CC) $(CFLAGS)  $(OBJ) $(LIBFT) -o $(NAME)
 	@echo "\033[1;32m$(NAME) built successfully!\033[0m"
 
 $(OBJDIR)/%.o: $(SRC_DIR)/%.c $(HEADERS)
 	@echo "\033[1;34m  Compiling [$< to $@]\033[0m"
-	@$(CC) $(CFLAGS) $(SANITIZE) $(INCLUDES) -c $< -o $@
+	@$(CC) $(CFLAGS)  $(INCLUDES) -c $< -o $@
 
 clean:
 	@echo "Cleaning objects..."
