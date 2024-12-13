@@ -26,7 +26,7 @@ void parse_dir (char *path, unsigned int options, int *ret)
 	dir = opendir(path);
 	if (!dir)
 	{
-		ft_printf("ft_ls: cannot open directory \'%s\': Permission denied\n", path);
+		ft_printf("ls: cannot open directory \'%s\': Permission denied\n", path);
 		*ret = 2;
 		return ;
 	}
@@ -80,7 +80,7 @@ int main (int ac, char **av)
 			read_option(&options, av[i]);
 		else if (lstat(av[i], &st))
 		{
-			ft_printf("ft_ls: cannot access \'%s\': No such file or directory\n", av[i]);
+			ft_printf("ls: cannot access \'%s\': No such file or directory\n", av[i]);
 			ret = 2;
 		}
 		else if (S_ISDIR(st.st_mode))

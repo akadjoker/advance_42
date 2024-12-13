@@ -39,6 +39,8 @@ void parse_dir (char *path, unsigned int options, int *ret);
 // Options
 void read_option (unsigned int *options, char *arg);
 
+int ls_printf(const char *format, ...);
+
 // Print
 void print_dir (node *lst, char *path, unsigned int options);
 void print_file (node *files, unsigned int options);

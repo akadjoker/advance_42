@@ -1,0 +1,16 @@
+==102673==ASan runtime does not come first in initial library list; you should either link runtime to your application or manually preload it with LD_PRELOAD.
+==102673== 
+==102673== Process terminating with default action of signal 11 (SIGSEGV)
+==102673==  General Protection Fault
+==102673==    at 0x5928EC2: __pthread_once_slow (pthread_once.c:114)
+==102673==    by 0x59F78C2: __rpc_thread_variables (rpc_thread.c:59)
+==102673==    by 0x5A4AC0C: free_mem (in /usr/lib/x86_64-linux-gnu/libc.so.6)
+==102673==    by 0x5A4A741: __libc_freeres (in /usr/lib/x86_64-linux-gnu/libc.so.6)
+==102673==    by 0x483F1B2: _vgnU_freeres (in /usr/libexec/valgrind/vgpreload_core-amd64-linux.so)
+==102673==    by 0x4A593DF: ???
+==102673==    by 0x494F2D6: __sanitizer::Die() (sanitizer_termination.cpp:59)
+==102673==    by 0x49253B8: __asan::AsanCheckDynamicRTPrereqs() (asan_linux.cpp:181)
+==102673==    by 0x4931564: __asan::AsanInitInternal() [clone .part.0] (asan_rtl.cpp:420)
+==102673==    by 0x40065BD: _dl_init (dl-init.c:102)
+==102673==    by 0x40202C9: ??? (in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+==102673==    by 0x2: ???
