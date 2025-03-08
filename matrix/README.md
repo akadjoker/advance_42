@@ -12,23 +12,41 @@ Este projeto implementa uma biblioteca de álgebra linear em Python, seguindo as
 ## Funcionalidades Implementadas
 
 ### Operações Básicas
-- **Exercise 00**: Adição, subtração e escalonamento de vetores e matrixes
-- **Exercise 01**: Combinação linear de vetores
-- **Exercise 02**: Interpolação linear entre vetores e matrixes
-- **Exercise 03**: Produto escalar (dot product)
-- **Exercise 04**: Cálculo de normas (norm-1, norm-2 e norm-infinity)
-- **Exercise 05**: Cálculo do cosseno do ângulo entre vetores
-- **Exercise 06**: Produto vetorial (cross product) para vetores 3D
-- **Exercise 07**: Multiplicação matrix-vetor e matrix-matrix
 
-### Propriedades e Transformações de matrixes
-- **Exercise 08**: Cálculo do traço de uma matrix
-- **Exercise 09**: Cálculo da transposta de uma matrix
-- **Exercise 10**: Transformação para a forma escalonada (row-echelon form)
-- **Exercise 11**: Cálculo do determinante
-- **Exercise 12**: Cálculo da matrix inversa
-- **Exercise 13**: Cálculo do posto (rank) de uma matrix
-- **Exercise 14 (Bonus)**: Geração de matrix de projeção para gráficos 3D
+- **Exercise 00**:
+        Implementa operações de adição, subtração e multiplicação por escalar para vetores e matrizes.
+        Permite combinar vetores e matrizes de forma linear.
+- **Exercise 01**:
+        Permite calcular combinações lineares de vetores, demonstrando o conceito de espaço vetorial.
+- **Exercise 02**:
+        Implementa a interpolação linear entre vetores e matrizes, útil para animações e transições suaves.
+- **Exercise 03**:
+        Calcula o produto escalar (dot product) entre vetores, uma operação fundamental para medir ângulos e projeções.
+- **Exercise 04**:
+        Calcula as normas L1, L2 e L∞ de vetores, usadas para medir o comprimento e a magnitude de vetores.
+- **Exercise 05**:
+        Calcula o cosseno do ângulo entre vetores, permitindo medir a semelhança entre vetores.
+- **Exercise 06**:
+        Implementa o produto vetorial (cross product) para vetores 3D, útil para calcular áreas e normais em geometria 3D.
+- **Exercise 08**:
+        Implementa a multiplicação matriz-vetor e matriz-matriz, operações essenciais para transformações lineares.
+
+### Propriedades e Transformações de Matrizes
+
+- **Exercise 08**:
+        Calcula o traço de uma matriz, a soma dos elementos da diagonal principal.
+- **Exercise 09**:
+        Calcula a transposta de uma matriz, trocando linhas por colunas.
+- **Exercise 10**:
+        Transforma uma matriz para a forma escalonada (row-echelon form) usando eliminação gaussiana.
+- **Exercise 11**:
+        Calcula o determinante de uma matriz, um valor escalar que indica a escala e orientação da transformação linear.
+- **Exercise 12**:
+        Calcula a matriz inversa, se existir, usando eliminação gaussiana ou decomposição LU.
+- **Exercise 13**:
+        Calcula o posto (rank) de uma matriz, o número de linhas ou colunas linearmente independentes.
+- **Exercise 04** (Bónus):
+        Gera uma matriz de projeção para gráficos 3D, transformando coordenadas 3D em coordenadas 2D para renderização.
 
 ## Detalhes de Implementação
 
@@ -93,7 +111,7 @@ O posto de uma matrix é uma medida fundamental da "dimensionalidade efetiva" do
 ### matrix de Projeção (Exercise 14)
 A matrix de projeção é fundamental em computação gráfica 3D:
 
-- **Função**: Transforma coordenadas 3D em coordenadas 2D para renderização na tela
+- **Função**: Transforma coordenadas 3D em coordenadas 2D para renderização no monitor
 - **Parâmetros**: Campo de visão (FOV), razão de aspecto, planos próximo e distante
 - **Espaço Normalizado**: Mapeia o volume de visualização para coordenadas normalizadas
 - **Transformação perspectiva**: Responsável pelo efeito de objetos distantes parecerem menores
@@ -126,7 +144,7 @@ Analisamos cada operação em termos de complexidade temporal e espacial:
 
 ### Aplicação em Computação Gráfica
 A implementação da matrix de projeção demonstra como a álgebra linear é fundamental para a renderização 3D:
-- Transforma o "mundo 3D" em uma projeção 2D para exibição na tela
+- Transforma o "mundo 3D" em uma projeção 2D para exibição no monitor
 - Cria o efeito de perspectiva (objetos distantes parecem menores)
 - Permite definir o campo de visão da "câmera virtual"
 
