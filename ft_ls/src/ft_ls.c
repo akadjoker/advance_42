@@ -1,95 +1,178 @@
-#include "ft_ls.h"
+#include <sys/stat.h>
+#include <dirent.h>
+#include <pwd.h>
+#include <grp.h>
+#include <time.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "utils.h"
 
-void recurse_ls (node *lst, unsigned int options, int *ret)
+int read_directory(const char *path, t_vector *vector, t_options *opts)
 {
-	struct stat		st;
+    DIR *dir = opendir(path);
+    if (!dir)
+    {
+        perror("ft_ls");
+        return 0;
+    }
 
-	for (node *c = lst->next ; c != lst ; c = c->next)
-	{
-		lstat(c->data, &st);
-		if (S_ISDIR(st.st_mode)
-			&& ft_strcmp(ft_strrchr(c->data, '/') + 1, ".")
-			&& ft_strcmp(ft_strrchr(c->data, '/') + 1, ".."))
-		{
-			parse_dir(c->data, options, ret);
-		}
-	}
+    struct dirent *entry;
+    while ((entry = readdir(dir)))
+    {
+        if (!opts->a && entry->d_name[0] == '.')
+            continue; // Pula arquivos ocultos se a opção -a não estiver presente
+
+        char full_path[4096];
+        ft_join_path(full_path, sizeof(full_path), path, entry->d_name);
+
+        struct stat file_stat;
+        if (lstat(full_path, &file_stat) == -1)
+            continue;
+
+        t_file_info *file_info = create_file_info(entry->d_name, full_path);
+        if (!file_info)
+            continue;
+
+        file_info->stats = file_stat;
+        vector_push(vector, file_info);
+    }
+
+    closedir(dir);
+    return 1;
 }
 
-void parse_dir (char *path, unsigned int options, int *ret)
+void process_directory(const char *path, t_options *opts, int is_recursive, int show_dirname)
 {
-	node			*lst;
-	DIR				*dir;
-	struct dirent	*ent;
-	char			*fullpath;
+    (void)is_recursive;
+    t_vector vector;
+    if (!vector_init(&vector, 100))
+        return;
 
-	dir = opendir(path);
-	if (!dir)
-	{
-		ft_printf("ls: cannot open directory \'%s\': Permission denied\n", path);
-		*ret = 2;
-		return ;
-	}
-	lst = ft_lst_init();
-	while ((ent = readdir(dir)))
-	{
-		if (ent->d_name[0] != '.' || options & LOWERA)
-		{
-			fullpath = ft_strjoinf(path, DONTFREE, "/", DONTFREE);
-			fullpath = ft_strjoinf(fullpath, FREE, ent->d_name, DONTFREE);
-			ft_lst_pushback(lst, ft_lst_new(fullpath));
-		}
-	}
-	closedir(dir);
-	lst = sort_dir(lst, options);
-	print_dir(lst, path, options);
-	if (options & UPPERR)
-		recurse_ls(lst, options, ret);
-	ft_lst_free(lst);
+    if (!read_directory(path, &vector, opts))
+    {
+        vector_free(&vector);
+        return;
+    }
+
+    vector_sort(&vector, opts);
+    
+    if (show_dirname)
+    {
+        print_directory_name(path);
+    }
+
+    if (opts->l)
+        print_detailed_list(&vector,opts);
+    else
+        print_simple_list(&vector,opts);
+
+    if (opts->R)
+    {
+        for (size_t i = 0; i < vector.size; i++)
+        {
+            t_file_info *file = vector.data[i];
+            
+            if (S_ISDIR(file->stats.st_mode) &&
+                ft_strcmp(file->name, ".") != 0 &&
+                ft_strcmp(file->name, "..") != 0)
+            {
+                write(1, "\n", 1);
+                process_directory(file->path, opts, 1, 1);
+            }
+        }
+    }
+
+    vector_free(&vector);
 }
 
-void ft_ls (node *dirs, node *files, unsigned int options, int *ret)
+int main(int argc, char **argv)
 {
-	if (ft_lst_empty(dirs) && ft_lst_empty(files) && *ret == 0)
-		ft_lst_pushback(dirs, ft_lst_new(ft_strdup(".")));
-	if (ft_lst_size(dirs) + ft_lst_size(files) > 1)
-		options = options | MULTIARG;
+    t_options opts = {0};
+    int i = 1;
+    
+    // Parse options
+    while (i < argc && argv[i][0] == '-' && argv[i][1] != '\0')
+    {
+        char *opt = argv[i] + 1;
+        while (*opt)
+        {
+            if (*opt == 'l')
+                opts.l = 1;
+            else if (*opt == 'R')
+                opts.R = 1;
+            else if (*opt == 'a')
+                opts.a = 1;
+            else if (*opt == 'r')
+                opts.r = 1;
+            else if (*opt == 't')
+                opts.t = 1;
+            else
+            {
+                ft_error_str("ft_ls: illegal option -- ", opt, 1);
+                return 1;
+            }
+            opt++;
+        }
+        i++;
+    }
 
-	files = sort_dir(files, options);
-	if (!ft_lst_empty(files))
-		print_file(files, options);
-	ft_lst_free(files);
+    // No args given - process current directory
+    if (i == argc)
+    {
+        process_directory(".", &opts, 0, 0);
+        return 0;
+    }
 
-	dirs = sort_dir(dirs, options);
-	for (node *c = dirs->next ; c != dirs ; c = c->next)
-		parse_dir(c->data, options, ret);
-	ft_lst_free(dirs);
-}
-
-int main (int ac, char **av)
-{
-	node			*dirs = ft_lst_init();
-	node			*files = ft_lst_init();
-	unsigned int	options = 0;
-	int				ret = 0;
-	struct stat		st;
-
-	for (int i = 1 ; i < ac ; i++)
-	{
-		if (av[i][0] == '-')
-			read_option(&options, av[i]);
-		else if (lstat(av[i], &st))
-		{
-			ft_printf("ls: cannot access \'%s\': No such file or directory\n", av[i]);
-			ret = 2;
-		}
-		else if (S_ISDIR(st.st_mode))
-			ft_lst_pushback(dirs, ft_lst_new(ft_strdup(av[i])));
-		else
-			ft_lst_pushback(files, ft_lst_new(ft_strdup(av[i])));
-	}
-
-	ft_ls(dirs, files, options, &ret);
-
-	return (ret);
+    // Process each argument
+    int first = 1;
+    int multiple_args = (i < argc - 1);
+    
+    while (i < argc)
+    {
+        struct stat st;
+        
+        if (lstat(argv[i], &st) == -1)
+        {
+            ft_error_str("ft_ls: ", argv[i], 0);
+            ft_error_str(": No such file or directory", "", 1);
+            i++;
+            continue;
+        }
+        
+        if (!first)
+            write(1, "\n", 1);
+            
+        if (S_ISDIR(st.st_mode))
+        {
+            process_directory(argv[i], &opts, 0, multiple_args);
+        }
+        else
+        {
+            // Single file
+            t_vector vector;
+            if (vector_init(&vector, 1))
+            {
+                t_file_info *file = create_file_info(argv[i], argv[i]);
+                if (file)
+                {
+                    file->stats = st;
+                    vector_push(&vector, file);
+                    
+                    if (opts.l)
+                        print_detailed_list(&vector,&opts);
+                    else
+                        print_simple_list(&vector,&opts);
+                    
+                    vector_free(&vector);
+                }
+            }
+        }
+        
+        first = 0;
+        i++;
+    }
+    
+    return 0;
 }
